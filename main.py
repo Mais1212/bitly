@@ -25,11 +25,11 @@ def count_clicks(headers, long_link):
     return clicks_count["total_clicks"]
 
 
-if __name__ == '__main__':
+def main():
     link = input("Ссылка : ")
 
     load_dotenv()
-    token = os.getenv("TOKEN")
+    token = os.getenv("BITLY_TOKEN")
     headers = {
         'Authorization': f'Bearer {token}'
     }
@@ -47,3 +47,7 @@ if __name__ == '__main__':
             print('Битлинк : ' + bitlink)
         except LookupError:
             print("Ошибка, введите ссылку повторно")
+
+
+if __name__ == '__main__':
+    main()
