@@ -5,10 +5,11 @@ import os
 
 
 def shorten_link(headers, link):
+    data = {"long_url": link}
     response = requests.post(
         'https://api-ssl.bitly.com/v4/bitlinks',
         headers=headers,
-        json=link)
+        json=data)
 
     short_link = response.json()
     return short_link["link"]
@@ -16,10 +17,9 @@ def shorten_link(headers, link):
 
 def count_clicks(headers, long_link):
     url_urlparse = urlparse(long_link).path
-
     response = requests.get(
-        'https://api-ssl.bitly.com/v4/bitlinks/bit.ly{}/clicks/summary'.format(
-            url_urlparse),
+        f'https://api-ssl.bitly.com/v4/bitlinks/bit.ly{url_urlparse}\
+        /clicks/summary',
         headers=headers)
     clicks_count = response.json()
     return clicks_count["total_clicks"]
@@ -33,20 +33,15 @@ def main():
     headers = {
         'Authorization': f'Bearer {token}'
     }
-    long_link = {"long_url": link}
 
-    if link.startswith("bit.ly", 8, 14):
-        try:
-            count_clicks = count_clicks(headers, link)
-            print("Количество кликов : " + str(count_clicks))
-        except LookupError:
-            print("Ошибка, введите ссылку повторно")
-    else:
-        try:
-            bitlink = shorten_link(headers, long_link)
-            print('Битлинк : ' + bitlink)
-        except LookupError:
-            print("Ошибка, введите ссылку повторно")
+    try:
+        counted_clicks = (count_clicks(headers, link))
+        print("Количество кликов : " + str(counted_clicks))
+    except Exception:
+        bitlink = shorten_link(headers, link)
+        print('Битлинк : ' + bitlink)
+
+    # print(shorten_link(headers, link))
 
 
 if __name__ == '__main__':
