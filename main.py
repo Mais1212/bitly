@@ -41,8 +41,6 @@ def main():
         bitlink = shorten_link(headers, link)
         print('Битлинк : ' + bitlink)
 
-    # print(shorten_link(headers, link))
-
 
 if __name__ == '__main__':
     main()
