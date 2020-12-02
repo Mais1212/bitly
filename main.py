@@ -37,10 +37,10 @@ def main():
     try:
         try:
             counted_clicks = (count_clicks(headers, link))
-            print("Количество кликов : " + str(counted_clicks))
+            print(f"Количество кликов : {counted_clicks}")
         except KeyError:
             bitlink = shorten_link(headers, link)
-            print('Битлинк : ' + bitlink)
+            print(f'Битлинк : {bitlink}')
     except:
         print("Введите ссылку повторно!")
         main()
