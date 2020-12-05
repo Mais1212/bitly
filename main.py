@@ -1,7 +1,8 @@
-from urllib.parse import urlparse
-from dotenv import load_dotenv
-import requests
 import os
+import json
+import requests
+from dotenv import load_dotenv
+from urllib.parse import urlparse
 
 
 def shorten_link(headers, link):
@@ -10,15 +11,16 @@ def shorten_link(headers, link):
         'https://api-ssl.bitly.com/v4/bitlinks',
         headers=headers,
         json=data)
+    response.raise_for_status()
 
     short_link = response.json()
     return short_link["link"]
 
 
-def count_clicks(headers, long_link):
-    url_urlparse = urlparse(long_link).path
+def get_count_clicks(headers, full_bitlink):
+    bitlink = f"{urlparse(full_bitlink).netloc}{urlparse(full_bitlink).path}"
     response = requests.get(
-        f'https://api-ssl.bitly.com/v4/bitlinks/{url_urlparse}\
+        f'https://api-ssl.bitly.com/v4/bitlinks/{bitlink}\
         /clicks/summary',
         headers=headers)
     clicks_count = response.json()
@@ -35,15 +37,13 @@ def main():
     }
 
     try:
-        try:
-            counted_clicks = (count_clicks(headers, link))
-            print(f"Количество кликов : {counted_clicks}")
-        except KeyError:
-            bitlink = shorten_link(headers, link)
-            print(f'Битлинк : {bitlink}')
-    except:
-        print("Введите ссылку повторно!")
-        main()
+        counted_clicks = (get_count_clicks(headers, link))
+        print(f"Количество кликов : {counted_clicks}")
+    except json.decoder.JSONDecodeError:
+        bitlink = shorten_link(headers, link)
+        print(f'Битлинк : {bitlink}')
+    except requests.exceptions.HTTPError as error:
+        print(f"Ошибка на сервере : \n{error}")
 
 
 if __name__ == '__main__':
