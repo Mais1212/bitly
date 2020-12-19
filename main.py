@@ -23,6 +23,7 @@ def get_count_clicks(headers, full_bitlink):
         f'https://api-ssl.bitly.com/v4/bitlinks/{bitlink}\
         /clicks/summary',
         headers=headers)
+    response.raise_for_status()
     clicks_count = response.json()
     return clicks_count["total_clicks"]
 
