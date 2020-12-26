@@ -23,8 +23,8 @@ def shorten_link(headers, link):
         'https://api-ssl.bitly.com/v4/bitlinks',
         headers=headers,
         json=data)
-    response.raise_for_status()
     short_link = response.json()
+    response.raise_for_status()
     return short_link["link"]
 
 
@@ -53,8 +53,11 @@ def main():
         counted_clicks = (get_count_clicks(headers, namespace.link))
         print(f"Количество кликов : {counted_clicks}")
     except json.decoder.JSONDecodeError:
-        bitlink = shorten_link(headers, namespace.link)
-        print(f'Битлинк : {bitlink}')
+        try:
+            bitlink = shorten_link(headers, namespace.link)
+            print(f'Битлинк : {bitlink}')
+        except requests.exceptions.HTTPError:
+            print("Ссылка какая-то 'Странная', попробуйте ввести другую")
     except requests.exceptions.HTTPError as error:
         print(namespace.link)
         print(f"Ошибка на сервере : \n{error}")
