@@ -17,15 +17,6 @@ def create_parser():
     return parser
 
 
-# def check_bitlink(bitlink, headers):
-#     bitlink = f"{urlparse(bitlink).netloc}{urlparse(bitlink).path}"
-
-#     response = requests.get(
-#         f"https://api-ssl.bitly.com/v4/bitlinks/{bitlink}", headers=headers)
-#     response.raise_for_status()
-#     print(response.text)
-
-
 def shorten_link(headers, link):
     data = {"long_url": link}
     response = requests.post(
@@ -58,16 +49,6 @@ def main():
         'Authorization': f'Bearer {token}'
     }
 
-    # try:
-    #     bitlink_info = check_bitlink(args.link, headers)
-    #     print(bitlink_info)
-    # except requests.exceptions.HTTPError:
-    #     try:
-    #         bitlink = shorten_link(headers, args.link)
-    #         print(f'Битлинк : {bitlink}')
-    #     except requests.exceptions.HTTPError:
-    #         print("Ссылка какая-то 'Странная', попробуйте ввести другую")
-
     try:
         counted_clicks = get_count_clicks(headers, args.link)
         print(f"Количество кликов : {counted_clicks}")
@@ -75,9 +56,8 @@ def main():
         try:
             bitlink = shorten_link(headers, args.link)
             print(f'Битлинк : {bitlink}')
-        except requests.exceptions.HTTPError as error:
-            print(args.link)
-            print(f"Ошибка на сервере : \n{error}")
+        except requests.exceptions.HTTPError:
+            print("Ссылка какая-то 'Странная', попробуйте ввести другую")
 
 
 if __name__ == '__main__':
