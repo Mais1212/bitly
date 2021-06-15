@@ -23,7 +23,3 @@ pip install -r requirements.txt
 ```
 python main.py https://dvmn.org/media/bokov.jpg
 ```
-
-### Цель проекта
-
-Код написан в образовательных целях на онлайн-курсе для веб-разработчиков [dvmn.org](https://dvmn.org/).
